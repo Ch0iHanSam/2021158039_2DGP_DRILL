@@ -44,6 +44,8 @@ def character_move(x,y,r_x,move):
             r_x+=1
             delay(0.01)
         while(r_x>=360 or (r_x>=0 and r_x<90)):
+            if(r_x==360):
+                r_x=0
             clear_canvas_now()
             grass.draw_now(400,30)
             character.draw_now(400+200*(math.cos(r_x/360*2*math.pi)), 290+200*(math.sin(r_x/360*2*math.pi)))
@@ -60,7 +62,6 @@ def character_move(x,y,r_x,move):
             grass.draw_now(400,30)
             character.draw_now(400+200*(math.cos(r_x/360*2*math.pi)), 290+200*(math.sin(r_x/360*2*math.pi)))
             r_x+=1
-            print(r_x)
             if(r_x == 270):
                 move = 'rectangular'
             delay(0.01)
