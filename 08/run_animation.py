@@ -9,6 +9,7 @@ x = 800//2
 y = 150
 frame = 0
 move = 'idle'
+forward = ''
 
 
 def handle_events():
@@ -17,32 +18,44 @@ def handle_events():
     global x
     global y
     global move
+    global forward
     events = get_events()
 
     for event in events:
         if event.type == SDL_QUIT:
             running = False
+
+        if event.type == SDL_KEYDOWN or move != 'idle':
+            if event.key == SDLK_RIGHT or move == 'right':
+                move = 'right'
+                forward = 'right'
+                dir = 100
+                x = x + 10
+            elif event.key == SDLK_LEFT or move == 'left':
+                move = 'left'
+                forward = 'left'
+                dir = 0
+                x = x - 10
+            elif event.key == SDLK_UP or move == 'up':
+                move = 'up'
+                if forward == 'right':
+                    dir = 100
+                elif forward == 'left':
+                    dir = 0
+                y = y + 10
+            elif event.key == SDLK_DOWN or move == 'down':
+                move = 'down'
+                if forward == 'right':
+                    dir = 100
+                elif forward == 'left':
+                    dir = 0
+                y = y - 10
         if event.type == SDL_KEYUP:
             if event.key == SDLK_RIGHT:
                 dir = 300
             elif event.key == SDLK_LEFT:
                 dir = 200
             move = 'idle'
-        if event.type == SDL_KEYDOWN or move != 'idle':
-            if event.key == SDLK_RIGHT or move == 'right':
-                move = 'right'
-                dir = 100
-                x = x + 10
-            elif event.key == SDLK_LEFT or move == 'left':
-                move = 'left'
-                dir = 0
-                x = x - 10
-            elif event.key == SDLK_UP or move == 'up':
-                move = 'up'
-                y = y + 10
-            elif event.key == SDLK_DOWN or move == 'down':
-                move = 'down'
-                y = y - 10
 
 
 while running:
@@ -86,6 +99,6 @@ while running:
     handle_events()
     frame = (frame+1)%8
 
-    delay(0.01)
+    delay(0.05)
 
 close_canvas()
