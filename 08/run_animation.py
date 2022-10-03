@@ -8,6 +8,7 @@ running = True
 x = 800//2
 y = 150
 frame = 0
+move = 'idle'
 
 
 def handle_events():
@@ -15,28 +16,33 @@ def handle_events():
     global dir
     global x
     global y
-
+    global move
     events = get_events()
 
     for event in events:
         if event.type == SDL_QUIT:
             running = False
-        if event.type == SDL_KEYDOWN:
-            if event.key == SDLK_RIGHT:
-                dir = 100
-                x = x + 10
-            elif event.key == SDLK_LEFT:
-                dir = 0
-                x = x - 10
-            elif event.key == SDLK_UP:
-                y = y + 10
-            elif event.key == SDLK_DOWN:
-                y = y - 10
         if event.type == SDL_KEYUP:
             if event.key == SDLK_RIGHT:
                 dir = 300
             elif event.key == SDLK_LEFT:
                 dir = 200
+            move = 'idle'
+        if event.type == SDL_KEYDOWN or move != 'idle':
+            if event.key == SDLK_RIGHT or move == 'right':
+                move = 'right'
+                dir = 100
+                x = x + 10
+            elif event.key == SDLK_LEFT or move == 'left':
+                move = 'left'
+                dir = 0
+                x = x - 10
+            elif event.key == SDLK_UP or move == 'up':
+                move = 'up'
+                y = y + 10
+            elif event.key == SDLK_DOWN or move == 'down':
+                move = 'down'
+                y = y - 10
 
 
 while running:
@@ -80,6 +86,6 @@ while running:
     handle_events()
     frame = (frame+1)%8
 
-    delay(0.07)
+    delay(0.01)
 
 close_canvas()
