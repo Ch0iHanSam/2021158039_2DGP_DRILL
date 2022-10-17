@@ -43,7 +43,8 @@ def handle_events():
                     play_state.plus()
                     game_framework.pop_state()
                 case pico2d.SDLK_k:
-                    play_state.minus()
+                    if len(play_state.boy) > 1:
+                        play_state.minus()
                     game_framework.pop_state()
 
 
