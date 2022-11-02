@@ -66,7 +66,7 @@ class SLEEP:
 
     @staticmethod
     def exit(self):
-        print('EXIT IDLE')
+        print('EXIT SLEEP')
 
     @staticmethod
     def do(self):
@@ -75,35 +75,62 @@ class SLEEP:
     @staticmethod
     def draw(self):
         if self.face_dir == -1:  # 왼쪽 눕기
-            self.image.clip_composite_draw(self.frame * 100, 200, 100, 100, -3.141592/2, '', self.x, self.y, 100, 100)
+            self.image.clip_composite_draw(self.frame * 100, 200, 100, 100, -3.141592/2, '', self.x, self.y-30, 100, 100)
         else:  # 오른쪽 눕기
-            self.image.clip_composite_draw(self.frame * 100, 300, 100, 100, 3.141592/2, '', self.x, self.y, 100, 100)
+            self.image.clip_composite_draw(self.frame * 100, 300, 100, 100, 3.141592/2, '', self.x, self.y-30, 100, 100)
 
+
+class AUTO_RUN:
+    @staticmethod
+    def enter(self, event):
+        print('Enter AUTO_RUN')
+        if self.dir == 0:
+            self.dir = self.face_dir
+
+
+    @staticmethod
+    def exit(self):
+        print('EXIT AUTO_RUN')
+        self.face_dir = self.dir
+        self.dir = 0
+
+    @staticmethod
+    def do(self):
+        self.frame = (self.frame + 1) % 8
+        self.x += self.dir
+        if self.x == 0:
+            self.dir += 2
+        elif self.x == 800:
+            self.dir -= 2
+
+
+    @staticmethod
+    def draw(self):
+        if self.dir == 1:
+            self.image.clip_draw(self.frame * 100, 100, 100, 100, self.x, self.y+30, 200, 200)
+        else:
+            self.image.clip_draw(self.frame * 100, 0, 100, 100, self.x, self.y+30, 200, 200)
 
 
 #이벤트 정의
-# RD, LD, RU, LU, TIMER = 0, 1, 2, 3, 5
-RD, LD, RU, LU, TIMER = range(5)
+# RD, LD, RU, LU, TIMER, AD = 0, 1, 2, 3, 5, 6
+RD, LD, RU, LU, TIMER, AD = range(6)
 
 
 key_event_table = {
     (SDL_KEYDOWN, SDLK_RIGHT) : RD,
     (SDL_KEYDOWN, SDLK_LEFT) : LD,
     (SDL_KEYUP, SDLK_RIGHT) : RU,
-    (SDL_KEYUP, SDLK_LEFT) : LU
-}
-
-
-table = {
-    "SLEEP" : {"HIT": "WAKE"},
-    "WAKE": {"TIMER10": "SLEEP"}
+    (SDL_KEYUP, SDLK_LEFT) : LU,
+    (SDL_KEYDOWN, SDLK_a) : AD
 }
 
 
 next_state = {
-    IDLE: {RU: RUN, LU: RUN, RD: RUN, LD: RUN, TIMER: SLEEP},
-    RUN: {RU: IDLE, LU: IDLE, RD: IDLE, LD: IDLE},
-    SLEEP: {RU: RUN, LU: RUN, RD: RUN, LD: RUN}
+    IDLE: {RU: RUN, LU: RUN, RD: RUN, LD: RUN, TIMER: SLEEP, AD: AUTO_RUN},
+    RUN: {RU: IDLE, LU: IDLE, RD: IDLE, LD: IDLE, AD: AUTO_RUN},
+    SLEEP: {RU: RUN, LU: RUN, RD: RUN, LD: RUN},
+    AUTO_RUN: {RU: AUTO_RUN, LU: AUTO_RUN, RD: RUN, LD: RUN, AD: IDLE}
 }
 class Boy:
     def __init__(self):
@@ -111,8 +138,6 @@ class Boy:
         self.frame = 0
         self.dir, self.face_dir = 0, 1
         self.image = load_image('animation_sheet.png')
-
-        self.timer = 100
 
         self.event_que = [] # 이벤트 큐 초기화
         self.cur_state = IDLE
