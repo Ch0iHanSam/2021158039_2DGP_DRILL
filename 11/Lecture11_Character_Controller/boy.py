@@ -139,6 +139,8 @@ class Boy:
         self.dir, self.face_dir = 0, 1
         self.image = load_image('animation_sheet.png')
 
+        self.timer = 1000
+
         self.event_que = [] # 이벤트 큐 초기화
         self.cur_state = IDLE
         self.cur_state.enter(self, None) # 초기 상태의 entry 액션 수행
