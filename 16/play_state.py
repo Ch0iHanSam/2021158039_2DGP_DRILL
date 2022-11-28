@@ -11,6 +11,7 @@ from boy import Boy
 from background import FixedBackground as Background
 
 import server
+from ball import Ball
 
 
 def enter():
@@ -20,7 +21,8 @@ def enter():
     server.boy = Boy()
     game_world.add_object(server.boy, 1)
 
-
+    ball = [Ball() for i in range(100)]
+    game_world.add_objects(ball, 1)
 
 
 
