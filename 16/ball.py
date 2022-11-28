@@ -4,16 +4,18 @@ import game_world
 
 class Ball:
     def __init__(self, Background):
-        self.x, self.y = random.randint(50, Background.w-50), random.randint(50, Background.h-50)
+        self.x, self.y = random.randint(50, Background.w - 50), random.randint(50, Background.h - 50)
         self.background = Background
         self.image = load_image('ball21x21.png')
+        self.first = True
+        self.window_x, self.window_y = None, None
 
     def update(self):
-        self.x = self.background.h - self.background.canvas_width-1
+        self.window_x = self.x - self.background.window_left
+        self.window_y = self.y - self.background.window_bottom
 
     def draw(self):
-        if self.background.window_left < self.x < self.background.window_left + self.background.canvas_width-1 and self.background.window_bottom < self.y < self.background.window_bottom + self.background.canvas_height-1:
-            self.image.draw(self.x, self.y)
+        self.image.draw(self.window_x, self.window_y)
 
     def get_bb(self):
         return self.x - 10, self.y - 10, self.x + 10, self.y + 10
