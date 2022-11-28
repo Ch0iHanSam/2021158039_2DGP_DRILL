@@ -116,6 +116,7 @@ class Boy:
         self.cur_state = WalkingState
         self.cur_state.enter(self, None)
         self.x, self.y = server.background.w // 2, server.background.h // 2
+        self.score = 0
 
 
     def get_bb(self):
@@ -138,6 +139,7 @@ class Boy:
             self.cur_state = next_state_table[self.cur_state][event]
             self.cur_state.enter(self, event)
 
+        print(self.score)
 
 
     def draw(self):
@@ -149,3 +151,6 @@ class Boy:
             key_event = key_event_table[(event.type, event.key)]
             self.add_event(key_event)
 
+    def handle_collision(self, b, group):
+        game_world.remove_object(b)
+        game_world.remove_collision_object(b)
